@@ -12,16 +12,11 @@ contract Structs {
 
     function createPerson(string memory name, uint age) public {
         address creator = msg.sender;
-        
+
         Person memory newPerson;
         newPerson.name = name;
         newPerson.age = age;
-        if(age > 18) {
-            newPerson.adult = true;
-        } else {
-            newPerson.adult = false;
-        }
-        // newPerson.adult = age > 18;
+        newPerson.adult = age > 18;
 
         people[creator] = newPerson;
 
