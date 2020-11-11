@@ -28,6 +28,12 @@ contract Require {
 
         people[msg.sender] = newPerson;
         creators.push(msg.sender);
+        //keccak256 is for hashing
+        //below check is people[msg.sender] == newPerson (but you can`t compare two structs,
+        // so we hash them and compare the outputs)
+        assert(
+            keccak256(abi.encodePacked(people[msg.sender].name, people[msg.sender].age, people[msg.sender].adult))
+            == keccak256(abi.encodePacked(newPerson.name, newPerson.age, newPerson.adult)));
     }
 
     function getPerson() public view returns(string memory name, uint age, bool adult) {
@@ -38,6 +44,7 @@ contract Require {
         // check if the address who called the function is the owner of the smart contract
         require(msg.sender == owner, "Caller needs to be owner");
         delete people[creator];
+        assert(people[creator].age == 0);
     }
 
     function getCreator(uint index) public view returns(address) {
