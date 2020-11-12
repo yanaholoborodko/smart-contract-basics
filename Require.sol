@@ -10,6 +10,13 @@ contract Require {
 
     address public owner;
 
+    modifier onlyOwner() {
+        // check if the address who called the function is the owner of the smart contract
+        require(msg.sender == owner, "Caller needs to be owner");
+        _; //continue execution
+    }
+
+
     // will only run once
     constructor() public {
         owner = msg.sender;
@@ -40,20 +47,16 @@ contract Require {
         return (people[msg.sender].name, people[msg.sender].age, people[msg.sender].adult);
     }
 
-    function deletePerson(address creator) public {
-        // check if the address who called the function is the owner of the smart contract
-        require(msg.sender == owner, "Caller needs to be owner");
+    function deletePerson(address creator) public onlyOwner {
         delete people[creator];
         assert(people[creator].age == 0);
     }
 
-    function getCreator(uint index) public view returns(address) {
-        require(msg.sender == owner, "Caller needs to be owner");
+    function getCreator(uint index) public view onlyOwner returns(address) {
         return creators[index];
     }
 
-    function getCreatorsQty() public view returns(uint) {
-        require(msg.sender == owner, "Caller needs to be owner");
+    function getCreatorsQty() public view onlyOwner returns(uint) {
         return creators.length;
     }
 
