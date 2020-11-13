@@ -8,6 +8,9 @@ contract Require {
         bool adult;
     }
 
+    event personCreated(string name, bool adult);
+    event personDeleted(string name, bool adult, address deletedBy);
+
     address public owner;
 
     modifier onlyOwner() {
@@ -41,6 +44,8 @@ contract Require {
         assert(
             keccak256(abi.encodePacked(people[msg.sender].name, people[msg.sender].age, people[msg.sender].adult))
             == keccak256(abi.encodePacked(newPerson.name, newPerson.age, newPerson.adult)));
+
+        emit personCreated(newPerson.name, newPerson.adult);
     }
 
     function getPerson() public view returns(string memory name, uint age, bool adult) {
@@ -48,8 +53,11 @@ contract Require {
     }
 
     function deletePerson(address creator) public onlyOwner {
+        string memory name = people[creator].name;
+        bool adult = people[creator].adult;
         delete people[creator];
         assert(people[creator].age == 0);
+        emit personDeleted(name, adult, msg.sender);
     }
 
     function getCreator(uint index) public view onlyOwner returns(address) {
