@@ -12,11 +12,17 @@ contract Require {
     event personDeleted(string name, bool adult, address deletedBy);
 
     address public owner;
+    uint public balance;
 
     modifier onlyOwner() {
         // check if the address who called the function is the owner of the smart contract
         require(msg.sender == owner, "Caller needs to be owner");
         _; //continue execution
+    }
+
+    modifier costs(uint cost) {
+        require(msg.value >= cost);
+        _;
     }
 
 
@@ -29,8 +35,11 @@ contract Require {
     address[] private creators;
 
 
-    function createPerson(string memory name, uint age) public {
+    function createPerson(string memory name, uint age) public payable costs(1 ether) {
         require(age < 150, "Age needs to be below 150");
+
+        balance += msg.value;
+
         Person memory newPerson;
         newPerson.name = name;
         newPerson.age = age;
@@ -66,6 +75,10 @@ contract Require {
 
     function getCreatorsQty() public view onlyOwner returns(uint) {
         return creators.length;
+    }
+
+    function getBalance() public view returns(uint) {
+        return owner.balance;
     }
 
 }
