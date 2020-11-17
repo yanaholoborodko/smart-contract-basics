@@ -1,7 +1,8 @@
 import "./Ownable.sol";
+import "./Destroyable.sol";
 pragma solidity 0.5.12;
 
-contract People is Ownable {
+contract People is Ownable, Destroyable {
 
     struct Person {
         string name;
@@ -35,7 +36,7 @@ contract People is Ownable {
         newPerson.adult = age > 18;
 
         address payable creator = msg.sender;
-        creator.send(10 ether);
+        // creator.transfer(10 ether);
         people[msg.sender] = newPerson;
         creators.push(msg.sender);
         //keccak256 is for hashing
